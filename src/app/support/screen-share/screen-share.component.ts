@@ -60,13 +60,13 @@ export class ScreenShareComponent implements OnInit {
       this.lazyStream = stream;
 
       const call = this.peer.call(id, stream);
-      call.on('stream', (remoteStream) => {
-        if (!this.peerList.includes(call.peer)) {
-          this.streamRemoteVideo(remoteStream);
-          this.currentPeer = call.peerConnection;
-          this.peerList.push(call.peer);
-        }
-      });
+      // call.on('stream', (remoteStream) => {
+      //   if (!this.peerList.includes(call.peer)) {
+      //     this.streamRemoteVideo(remoteStream);
+      //     this.currentPeer = call.peerConnection;
+      //     this.peerList.push(call.peer);
+      //   }
+      // });
     }).catch(err => {
       console.log(err + 'Unable to connect');
     });
@@ -112,6 +112,31 @@ export class ScreenShareComponent implements OnInit {
     const videoTrack = this.lazyStream.getVideoTracks()[0];
     const sender = this.currentPeer.getSenders().find(s => s.track.kind === videoTrack.kind);
     sender.replaceTrack(videoTrack);
+  }
+
+  handlePeerDisconnect() {
+    // manually close the peer connections
+
+    if (this.lazyStream) {
+      this.peerIdShare = '';
+      this.lazyStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+      console.log(this.lazyStream);
+      this.lazyStream.getTracks()[0].stop();
+      this.lazyStream.getTracks()[1].stop();
+      console.log(this.lazyStream.getTracks());
+    }
+    for (let conns in this.peer.connections) {
+      this.peer.connections[conns].forEach((conn, index, array) => {
+        console.log(`closing ${conn.connectionId} peerConnection (${index + 1}/${array.length})`, conn.peerConnection);
+        conn.peerConnection.close();
+
+        // close it using peerjs methods
+        if (conn.close)
+          conn.close();
+      });
+    }
   }
 
 }

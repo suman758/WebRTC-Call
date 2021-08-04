@@ -2,13 +2,15 @@
   <h5>Connect with Peer</h5>
 
   <!-- Video & screen share container -->
-  <span>PeerId: {{peerId}}</span>
+  <span>My Id To Share: {{peerId}}</span>
   <div style="width: 400px; height: 300px; border: 2px solid" id="remote-video"></div>
 
   <br>
   <div style="margin-top: 20px;">
-    <input type="text" placeholder="Peer Id" [(ngModel)]='peerIdShare' />
-    <button class="button" (click)="connectWithPeer()">Call Peer</button>
+    <input type="text" placeholder="Other Id To Connect" [(ngModel)]='peerIdShare' />
+    <button class="button" (click)="connectWithPeer()">Call Someone</button>
     <button class="button" (click)="screenShare()">Screen share</button>
+    <button class="button" (click)="handlePeerDisconnect()">Close call</button>
+
   </div>
 </div>
